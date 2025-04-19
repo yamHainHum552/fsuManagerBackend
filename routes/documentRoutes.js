@@ -7,14 +7,15 @@ const {
 } = require("../controllers/documentController");
 
 const upload = require("../middlewares/uploadToCloudinary"); // 💡 Using Cloudinary middleware
+const { protect } = require("../middlewares/authMiddleware");
 
 // 🌩 Upload document to Cloudinary
-router.post("/add", upload.single("file"), uploadDocument);
+router.post("/add", protect, upload.single("file"), uploadDocument);
 
 // 📂 Get all documents
-router.get("/", getDocuments);
+router.get("/", protect, getDocuments);
 
 // 🗑️ Delete a document (optional)
-router.delete("/:id", deleteDocument);
+router.delete("/:id", protect, deleteDocument);
 
 module.exports = router;
