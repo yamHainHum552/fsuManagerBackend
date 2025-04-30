@@ -4,6 +4,7 @@ const {
   uploadDocument,
   getDocuments,
   deleteDocument,
+  updateDocument,
 } = require("../controllers/documentController");
 
 const upload = require("../middlewares/uploadToCloudinary"); // 💡 Using Cloudinary middleware
@@ -17,5 +18,8 @@ router.get("/", protect, getDocuments);
 
 // 🗑️ Delete a document (optional)
 router.delete("/:id", protect, deleteDocument);
+
+// Update document
+router.put("/:id", protect, upload.single("file"), updateDocument); // Optional if you want to implement update functionality
 
 module.exports = router;

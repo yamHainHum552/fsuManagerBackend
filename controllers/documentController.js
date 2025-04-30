@@ -59,3 +59,34 @@ exports.getDocuments = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch documents" });
   }
 };
+
+exports.updateDocument = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const doc = await Document.findById(req.params.id);
+    if (!doc) return res.status(404).json({ message: "Document not found" });
+
+    // If a new file is uploaded, delete the old one
+    if (req.file) {
+      if (doc.fileUrl) {
+        const publicId = getPublicIdFromUrl(doc.fileUrl);
+        await deleteImage(publicId);
+      }
+
+      const fileUrl = req.file.path;
+      const ext = path.extname(req.file.originalname).replace(".", "");
+      doc.fileUrl = fileUrl;
+      doc.documentType = ext.toLowerCase();
+    }
+
+    doc.title = title || doc.title;
+    doc.description = description || doc.description;
+
+    await doc.save();
+
+    res.json({ message: "Document updated successfully", document: doc });
+  } catch (error) {
+    console.error("Error updating document:", error.message);
+    res.status(500).json({ message: "Failed to update document" });
+  }
+};
