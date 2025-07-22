@@ -40,8 +40,8 @@ const transactionSchema = new mongoose.Schema({
     ],
   },
   date: {
-    type: String,
-    required: true,
+    type: Date,
+    default: Date.now,
   },
   note: {
     type: String,
